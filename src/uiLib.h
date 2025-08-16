@@ -22,7 +22,7 @@ private:
 class TextBox
 {
 public:
-	TextBox(Rectangle bounds, int fontSize, Color boxColor, Color focusedSolor, Color textColor);
+	TextBox(Rectangle bounds, int fontSize, Color boxColor, Color focusedColor, Color textColor);
 
 	void Update();
 
@@ -40,5 +40,6 @@ private:
 	Color m_textColor;
 
 	bool m_isFocused;
+	Vector2 m_cursorPos;
 	double m_cursorTimer = 0.0;
 };

@@ -2,8 +2,13 @@ todo:
 	- make the enter key work (newline stuff)
 	- add a font to the text box
 
-- 22.8.2025:
+- 16.8.2025:
+	- added enter/new line typing
+	- added upper/lower cas aplhabels
+	- 
+
+- 15.8.2025:
 	- made a lib for label and textBoxes
 	- you can type in the text box
 	- added a cursor to the text box
-	- 
+	- Added a git repo

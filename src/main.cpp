@@ -1,3 +1,9 @@
+
+/*
+Use this to compile and run:
+g++ src/main.cpp src/uiLib.cpp -lraylib -lm -o app && ./app && clear
+*/
+
 #include "iostream"
 #include "raylib.h"
 
