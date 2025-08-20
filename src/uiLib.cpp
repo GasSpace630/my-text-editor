@@ -1,5 +1,6 @@
 #include "uiLib.h"
 #include <raylib.h>
+#include <string>
 
 // ########## LABEL Class ##########
 
@@ -13,81 +14,53 @@ Label::Label(const std::string& text, Vector2 position, int fontSize, Font font,
 
 void Label::Draw() const
 {
-	DrawTextEx(m_font, m_text.c_str(), {m_position.x, m_position.y}, m_fontSize, 0.0, m_color);
+	DrawTextEx(m_font, m_text.c_str(), {m_position.x, m_position.y}, m_fontSize, 1, m_color);
 }
 
 // ########## TEXT BOX Class ##########
 
-TextBox::TextBox(Rectangle bounds, int fontSize, Color boxColor, Color focusedColor, Color textColor):
-	m_bounds(bounds),
-	m_fontSize(fontSize),
-	m_boxColor(boxColor),
-	m_focusedColor(focusedColor),
-	m_textColor(textColor)
-	{
-		m_text = "";
-	}
-
-void TextBox::Update()
-{
-	Vector2 MousePos = GetMousePosition();
-	// focus the text box when you click on it
-	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-	{
-		m_isFocused = CheckCollisionPointRec(MousePos, m_bounds);
-		if (m_isFocused)
-		{
-			m_cursorTimer = 0.0;
-		}
-	}
-
-	if (m_isFocused)
-	{
-		// get the ASCII key presssed
-		int pressedKey = GetKeyPressed();
-		int textWidth = MeasureText(m_text.c_str(), m_fontSize);
-		if (pressedKey >= 32 && pressedKey <= 126 && textWidth <= m_bounds.width - m_fontSize)
-		{
-			if (IsKeyDown(KEY_LEFT_SHIFT))
-			{
-				pressedKey -= 32;
-			}
-			pressedKey += 32;
-			m_text += (char)pressedKey;
-			m_cursorPos.x++;
-		}
-		if (IsKeyPressed(KEY_BACKSPACE))
-		{
-			if (!m_text.empty())
-			{
-				m_text.pop_back();
-				m_cursorPos.x--;
-			}
-		}
-		if (IsKeyPressed(KEY_ENTER))
-		{
-			m_text += "\n";
-			m_cursorPos.y += m_fontSize;
-		}
-	}
-
-	m_cursorTimer += GetFrameTime();
-	if (m_cursorTimer > 1.5)
-	{
-		m_cursorTimer = 0.0;
-	}
-}
+TextBox::TextBox(Vector2 size, Vector2 position, Font font,  int fontSize):
+	m_size(size),
+	m_position(position),
+	m_font(font),
+	m_fontSize(fontSize)
+	{}
 
 void TextBox::Draw() const
 {
-	Color bgColor = m_isFocused ? m_focusedColor : m_boxColor;
-	DrawRectangleRec(m_bounds, bgColor);
-	std::string textBeforeCursor = m_text.substr(0, m_cursorPos.x);
-	int textWidth = MeasureText(textBeforeCursor.c_str(), m_fontSize);
-	int cursorX = m_bounds.x + 5 + textWidth;
-	if (m_isFocused && m_cursorTimer > 1.0)
+	Vector2 textPos = {m_position.x + 5, m_position.y + 5};
+	DrawRectangle(m_position.x, m_position.y, m_size.x, m_size.y, DARKGRAY);
+	DrawTextEx(m_font, m_textBoxText.c_str(), textPos, m_fontSize, 1, WHITE);
+
+	DrawRectangle(m_caretPos.x + 5, m_caretPos.y + 5, 5, 20, RED);
+}
+
+void TextBox::Update()
+{
+	Vector2 textSize = MeasureTextEx(m_font, m_textBoxText.c_str(), m_fontSize, 1.0);
+	m_caretPos.y = textSize.y;
+
+	int key = GetCharPressed();
+
+	while (key > 0)
 	{
-		DrawText("|", cursorX, m_bounds.y + 5 + m_cursorPos.y, m_fontSize, m_textColor);
+		if ((key >= 32) && (key <= 125))
+		{
+			m_textBoxText.push_back(static_cast<char>(key));
+			m_cursorPos++;
+		}
+		key = GetCharPressed();
 	}
-	DrawText(m_text.c_str(), m_bounds.x + 5, m_bounds.y + 5, m_fontSize, WHITE);
+	if ((IsKeyPressed(KEY_BACKSPACE)) && (!m_textBoxText.empty()))
+	{
+		m_textBoxText.erase(m_cursorPos - 1, 1);
+		m_cursorPos--;
+	}
+	if (IsKeyPressed(KEY_ENTER))
+	{
+		m_textBoxText.insert(m_cursorPos, 1, '\n');
+	}
+
+	if (m_cursorPos < 0) m_cursorPos = 0;
+	if (m_cursorPos > m_textBoxText.length()) m_cursorPos = m_textBoxText.length();
 }

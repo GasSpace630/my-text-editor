@@ -21,25 +21,21 @@ private:
 // ########## TEXT BOX Class ##########
 class TextBox
 {
-public:
-	TextBox(Rectangle bounds, int fontSize, Color boxColor, Color focusedColor, Color textColor);
-
-	void Update();
-
-	void Draw() const;
-
-	std::string GetText() const;
-
 private:
-	Rectangle m_bounds;
-	std::string m_text;
+	Vector2 m_size;
+	Vector2 m_position;
+
+	Font m_font;
 	int m_fontSize;
 
-	Color m_boxColor;
-	Color m_focusedColor;
-	Color m_textColor;
+	int m_cursorPos;
+	Vector2 m_caretPos;
 
-	bool m_isFocused;
-	Vector2 m_cursorPos;
-	double m_cursorTimer = 0.0;
+public:
+	TextBox(Vector2 size, Vector2 position, Font font, int fontSize);
+
+	std::string m_textBoxText;
+
+	void Draw() const;
+	void Update();
 };

@@ -28,18 +28,20 @@ int main()
 	Vector2 textPos = { (float)screenWidth / 2.0f - (float)textSize.x / 2.0f, 0.0f };
 
 	Label label1(text, textPos, fontSize, pixelFont, WHITE);
-	TextBox textBox1({25, 25, 800, 400}, fontSize, GRAY, DARKGRAY, WHITE);
+
+	TextBox textbox1({(float)screenWidth, (float)screenHeight-20}, {0, 20}, pixelFont, 16);
 
 
 	while(!WindowShouldClose())
 	{
-		textBox1.Update();
+		textbox1.Update();
+
 		BeginDrawing();
 
 		ClearBackground(BLACK);
 		label1.Draw();
-		textBox1.Draw();
-		DrawRectangle(0, 0, 20, screenHeight, GRAY);
+		
+		textbox1.Draw();
 
 		EndDrawing();
 	}
